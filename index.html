@@ -342,14 +342,20 @@ window.onload = function () {
             }
 
 function end() {
+  // Stop the background music first
   const bgm = document.getElementById("bgm");
-  bgm.src = "./assets/about You.mp3"; 
-  bgm.load();
-  bgm.play();
+  bgm.pause();
 
-  document.getElementById("songTitle").innerHTML = " ";
+  // Create new audio for "About You"
+  const aboutYou = new Audio("./assets/about You.mp3");
+  aboutYou.loop = false;
+  aboutYou.play().catch(err => console.log("Playback blocked:", err));
+
+  // Optional: update the song title
+  document.getElementById("songTitle").innerHTML = "About You";
+
+  // Continue your existing display logic
   link = "https://www.youtube.com/watch?v=p6EjUkQ3Ut0";
-
   document.getElementById("filling").src = "./assets/" + filling + " filling.png";
   document.getElementById("topping").src = "./assets/" + topping + " topping.png";
   document.getElementById("endScene").style.display = "flex";
@@ -358,6 +364,7 @@ function end() {
   document.body.style.backgroundImage = "url('./assets/bg copy.png')";
   downloadImageButton();
 }
+
 
             function openLink()
             {
