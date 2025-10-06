@@ -343,9 +343,23 @@ window.onload = function () {
 
 function end() {
   const bgm = document.getElementById("bgm");
-  bgm.src = "./assets/about You.mp3"; 
-  bgm.load();
-  bgm.play();
+  
+  // Stop the old background music first
+  bgm.pause();
+  bgm.muted = false; // make sure unmuted
+  bgm.removeAttribute("muted");
+
+  // Change the source smoothly
+  bgm.src = "./assets/about You.mp3";
+
+  // Small delay before play to ensure browser applies new source
+  setTimeout(() => {
+    bgm.play().then(() => {
+      console.log("Now playing: about You.mp3");
+    }).catch(err => {
+      console.log("Autoplay prevented:", err);
+    });
+  }, 200);
 
   document.getElementById("songTitle").innerHTML = " ";
   link = "https://www.youtube.com/watch?v=p6EjUkQ3Ut0";
@@ -358,6 +372,7 @@ function end() {
   document.body.style.backgroundImage = "url('./assets/bg copy.png')";
   downloadImageButton();
 }
+
 
             function openLink()
             {
