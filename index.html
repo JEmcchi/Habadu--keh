@@ -415,68 +415,53 @@ function end() {
 let player;
 const bgm = document.getElementById("bgm");
 const container = document.getElementById("youtubeContainer");
+const videoTrigger = document.getElementById("videoTrigger");
 
-// 1. Make sure this callback is global so YouTube API can call it
+// Load YouTube IFrame API
+const tag = document.createElement("script");
+tag.src = "https://www.youtube.com/iframe_api";
+document.body.appendChild(tag);
+
+// Required global callback
 window.onYouTubeIframeAPIReady = function () {
   player = new YT.Player("youtubePlayer", {
-    videoId: "e1aM8Tnl49Y", // ✅ use only ID part, not the full URL
+    videoId: "e1aM8Tnl49Y", // replace with your YouTube ID only
     playerVars: {
       autoplay: 0,
       controls: 1,
       modestbranding: 1,
       rel: 0,
       fs: 1,
-      origin: window.location.origin // add origin for embedding permission
     },
     events: {
-      onReady: onPlayerReady,
-      onStateChange: onPlayerStateChange,
+      onReady: () => console.log("YouTube Player Ready"),
+      onStateChange: (e) => {
+        if (e.data === YT.PlayerState.ENDED) hideYouTubeAndResume();
+      },
     },
   });
 };
 
-// 2. Allow autoplay once ready (required by Chrome policy)
-function onPlayerReady() {
-  console.log("YouTube Player Ready");
-}
-
-// 3. Trigger when user clicks text
-document.getElementById("videoTrigger").addEventListener("click", function () {
-  // Pause background music
+videoTrigger.addEventListener("click", () => {
   bgm.pause();
-
-  // Show YouTube container
   container.style.display = "block";
 
-  // Play YouTube video safely
   if (player && player.playVideo) {
     player.seekTo(0);
     player.playVideo();
-  } else {
-    console.warn("Player not ready yet.");
   }
 
-  // Enter fullscreen
   if (container.requestFullscreen) container.requestFullscreen();
   else if (container.webkitRequestFullscreen) container.webkitRequestFullscreen();
   else if (container.msRequestFullscreen) container.msRequestFullscreen();
 });
 
-// 4. When video ends
-function onPlayerStateChange(event) {
-  if (event.data === YT.PlayerState.ENDED) {
-    hideYouTubeAndResume();
-  }
-}
-
-// 5. Hide and resume bgm
 function hideYouTubeAndResume() {
   container.style.display = "none";
-  if (player && player.stopVideo) player.stopVideo();
+  if (player && player.stopVideo) player.stopVideo(); 
   bgm.play();
 }
 
-// 6. Handle ESC / exit fullscreen
 ["fullscreenchange", "webkitfullscreenchange", "msfullscreenchange"].forEach(evt =>
   document.addEventListener(evt, () => {
     if (
@@ -487,7 +472,7 @@ function hideYouTubeAndResume() {
       hideYouTubeAndResume();
     }
   })
-); 
+);
 
 
         </script>
