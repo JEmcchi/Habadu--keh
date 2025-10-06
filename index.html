@@ -342,10 +342,13 @@ window.onload = function () {
             }
 
 function end() {
-  const bgm = document.getElementById("bgm");
-  bgm.src = "./assets/about You.mp3"; 
-  bgm.load();
-  bgm.play();
+const bgm = document.getElementById("bgm");
+bgm.pause();
+bgm.muted = false; // ensure unmuted
+bgm.src = "./assets/about You.mp3";
+bgm.play().catch(() => {
+  console.log("Autoplay blocked, waiting for user interaction");
+});
 
   document.getElementById("songTitle").innerHTML = " ";
   link = "https://www.youtube.com/watch?v=p6EjUkQ3Ut0";
